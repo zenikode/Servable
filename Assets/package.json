@@ -1,0 +1,15 @@
+{
+  "name": "com.zeni.servable",
+  "displayName": "Servable",
+  "description": "Tiny and useful observable framework",
+  "hideInEditor": "false",
+  "version": "1.0.0",
+  "unity": "6000.0",
+  "license": "MIT",
+  "author": {
+    "name": "zenikode",
+    "email": "zenikode@gmail.com",
+    "url": "https://github.com/servable"
+  },
+  "dependencies": {}
+}
