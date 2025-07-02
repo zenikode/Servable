@@ -1,4 +1,4 @@
-# Servable 🚀
+# Servable
 
 [![GitHub stars](https://img.shields.io/github/stars/zenikode/Servable?style=social)](https://github.com/zenikode/Servable/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/zenikode/Servable?style=social)](https://github.com/zenikode/Servable/network/members)
@@ -25,7 +25,7 @@
 Add Servable to your Unity project by editing your `manifest.json`:
 
 ```json
-    "com.zeni.servable": "https://github.com/zenikode/Servable.git?path=Assets"
+"com.zeni.servable": "https://github.com/zenikode/Servable.git?path=Assets"
 ```
 
 - Minimum Unity version: **2021.3**
@@ -244,6 +244,68 @@ public class PlayerModel : ModelBehaviour
 - Bindings can target any property (getter) that returns an `ObservableData<T>`, whether in a `MonoBehaviour` or `ScriptableObject`.
 - Property drawers and custom inspectors streamline the workflow—just select the model and property in the Unity Editor.
 - Supports runtime and editor-time scenarios.
+
+---
+
+### ☝️ _One more thing:_ External Binding Example — Player Animator Is Sleepy If It's Evening
+
+Servable bindings can reference properties from external objects, including ScriptableObjects, making it easy to build centralized services or game-wide state.
+
+**Example:**  
+Suppose you have a `DaytimeService` ScriptableObject with an observable enum property for the current day phase. You want your player animator to enter a "sleepy" state if it's evening.
+
+**DaytimeService ScriptableObject:**
+```csharp
+using Servable.Runtime;
+using Servable.Runtime.ObservableProperty;
+using UnityEngine;
+
+public enum DayPhase
+{
+    Morning,
+    Afternoon,
+    Evening,
+    Night
+}
+
+[CreateAssetMenu(menuName = "Game/DaytimeService")]
+public class DaytimeService : ScriptableObject
+{
+    public ObservableData<DayPhase> Phase = new(DayPhase.Morning);
+}
+```
+
+**Binding Example: Player Animator Sleepy State**
+```csharp
+using Servable.Runtime.Bindings;
+using UnityEngine;
+
+public class BindAnimatorSleepy : ABindingData<DayPhase>
+{
+    Animator _animator;
+    Animator animator => _animator ??= GetComponent<Animator>();
+    public string sleepyParameter = "IsSleepy";
+
+    public override void OnValue(DayPhase value)
+    {
+        if (animator)
+            animator.SetBool(sleepyParameter, value == DayPhase.Evening);
+    }
+}
+```
+
+**How to bind to the external ScriptableObject:**
+- Create an instance of `DaytimeService` in your project (Assets → Create → Game → DaytimeService).
+- Add `BindAnimatorSleepy` to your player GameObject (with an `Animator`).
+- **In the Inspector, bind `BindAnimatorSleepy.data` to the `Phase` property of the `DaytimeService` ScriptableObject instance**.
+- In your Animator Controller, use the `IsSleepy` bool parameter to transition to a "sleepy" animation state.  
+  For example, when `IsSleepy` is true (evening), the avatar might play a yawn, stretch, or drowsy idle animation.
+
+**Gameplay logic example:**
+```csharp
+// From any system or MonoBehaviour:
+daytimeService.Phase.Value = DayPhase.Evening; // Triggers sleepy state on all linked animators
+```
 
 ---
 
