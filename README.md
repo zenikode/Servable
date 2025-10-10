@@ -33,98 +33,6 @@ Add Servable to your Unity project by editing your `manifest.json`:
 - Requires: [Newtonsoft.Json](https://www.newtonsoft.com/json)
 
 ---
-
-## 🧠 Attribute-driven Lifecycle & Auto-Subscriptions
-
-Servable предоставляет удобные атрибуты для упрощения инициализации и подписок без лишнего кода в наследниках.
-
-### Lifecycle Hooks
-
-- `OnAwake` — метод без параметров, вызывается в `Awake` базового `ModelBehaviour`/`ABinding`.
-- `OnEnable` — метод без параметров, вызывается в `OnEnable`.
-- `OnDisable` — метод без параметров, вызывается в `OnDisable`.
-- `OnDestroy` — метод без параметров, вызывается в `OnDestroy`.
-
-Хуки «запечатаны»: сами методы Unity (`Awake/OnEnable/OnDisable/OnDestroy`) приватные в базовых классах и вызывают помеченные атрибутами методы через рефлексию.
-
-Пример:
-```csharp
-using Servable.Runtime;
-
-public class MyModel : ModelBehaviour
-{
-    [OnAwake]
-    private void Init() { }
-
-    [OnEnable]
-    private void SubscriptionsOn() { }
-
-    [OnDisable]
-    private void SubscriptionsOff() { }
-
-    [OnDestroy]
-    private void Cleanup() { }
-}
-```
-
-### Auto-Subscribe to ObservableData
-
-`OnData(string propertyName)` — навешивается на метод с одним параметром `T`. В `Awake` происходит подписка на `ObservableData<T>` свойства `propertyName` текущей модели; в `OnDestroy` — отписка.
-
-```csharp
-using Servable.Runtime;
-using Servable.Runtime.ObservableProperty;
-
-public class UserModel : ModelBehaviour
-{
-    public ObservableData<int> Score { get; } = new(0);
-
-    [OnData("Score")]
-    private void OnScoreChanged(int score)
-    {
-        // react to value
-    }
-}
-```
-
-### Auto-Subscribe to ObservableCommand
-
-`OnCommand(string propertyName)` — навешивается на метод:
-- без параметров → подписка на `ObservableCommand`;
-- с одним параметром `T` → подписка на `ObservableCommand<T>`.
-
-Подписка выполняется в `Awake`, отписка — в `OnDestroy`.
-
-```csharp
-using Servable.Runtime;
-using Servable.Runtime.ObservableProperty;
-
-public class PagerModel : ModelBehaviour
-{
-    public ObservableCommand Refresh { get; } = new();
-    public ObservableCommand<int> SetPage { get; } = new();
-
-    [OnCommand("Refresh")]
-    private void OnRefresh()
-    {
-        // refresh logic
-    }
-
-    [OnCommand("SetPage")]
-    private void OnSetPage(int page)
-    {
-        // handle page
-    }
-}
-```
-
-Технические детали:
-- Поиск свойств происходит по имени через `ObservablePropertyLocatorExt` (`GetData<T>`, `GetCommand`, `GetCommand<T>`).
-- Делегаты создаются через `Delegate.CreateDelegate` по сигнатуре метода, dynamic не используется.
-- На отписку используется повторный рефлексивный обход в `OnDestroy` (без хранения состояния подписок).
-
----
-
 ## 🚀 Quickstart: Health Bar, Health Percent, and Damage Feedback Chain
 
 This example demonstrates a linear chain of observable data and commands in `PlayerModel`, using generic binding names.
@@ -413,6 +321,97 @@ daytimeService.Phase.Value = DayPhase.Evening; // Triggers sleepy state on all l
 
 - Unity **2021.3+**
 - [Newtonsoft.Json](https://www.newtonsoft.com/json)
+
+---
+
+## 🧠 Attribute-driven Lifecycle & Auto-Subscriptions
+
+Servable предоставляет удобные атрибуты для упрощения инициализации и подписок без лишнего кода в наследниках.
+
+### Lifecycle Hooks
+
+- `OnAwake` — метод без параметров, вызывается в `Awake` базового `ModelBehaviour`/`ABinding`.
+- `OnEnable` — метод без параметров, вызывается в `OnEnable`.
+- `OnDisable` — метод без параметров, вызывается в `OnDisable`.
+- `OnDestroy` — метод без параметров, вызывается в `OnDestroy`.
+
+Хуки «запечатаны»: сами методы Unity (`Awake/OnEnable/OnDisable/OnDestroy`) приватные в базовых классах и вызывают помеченные атрибутами методы через рефлексию.
+
+Пример:
+```csharp
+using Servable.Runtime;
+
+public class MyModel : ModelBehaviour
+{
+    [OnAwake]
+    private void Init() { }
+
+    [OnEnable]
+    private void SubscriptionsOn() { }
+
+    [OnDisable]
+    private void SubscriptionsOff() { }
+
+    [OnDestroy]
+    private void Cleanup() { }
+}
+```
+
+### Auto-Subscribe to ObservableData
+
+`OnData(string propertyName)` — навешивается на метод с одним параметром `T`. В `Awake` происходит подписка на `ObservableData<T>` свойства `propertyName` текущей модели; в `OnDestroy` — отписка.
+
+```csharp
+using Servable.Runtime;
+using Servable.Runtime.ObservableProperty;
+
+public class UserModel : ModelBehaviour
+{
+    public ObservableData<int> Score { get; } = new(0);
+
+    [OnData("Score")]
+    private void OnScoreChanged(int score)
+    {
+        // react to value
+    }
+}
+```
+
+### Auto-Subscribe to ObservableCommand
+
+`OnCommand(string propertyName)` — навешивается на метод:
+- без параметров → подписка на `ObservableCommand`;
+- с одним параметром `T` → подписка на `ObservableCommand<T>`.
+
+Подписка выполняется в `Awake`, отписка — в `OnDestroy`.
+
+```csharp
+using Servable.Runtime;
+using Servable.Runtime.ObservableProperty;
+
+public class PagerModel : ModelBehaviour
+{
+    public ObservableCommand Refresh { get; } = new();
+    public ObservableCommand<int> SetPage { get; } = new();
+
+    [OnCommand("Refresh")]
+    private void OnRefresh()
+    {
+        // refresh logic
+    }
+
+    [OnCommand("SetPage")]
+    private void OnSetPage(int page)
+    {
+        // handle page
+    }
+}
+```
+
+Технические детали:
+- Поиск свойств происходит по имени через `ObservablePropertyLocatorExt` (`GetData<T>`, `GetCommand`, `GetCommand<T>`).
+- Делегаты создаются через `Delegate.CreateDelegate` по сигнатуре метода, dynamic не используется.
+- На отписку используется повторный рефлексивный обход в `OnDestroy` (без хранения состояния подписок).
 
 ---
 
