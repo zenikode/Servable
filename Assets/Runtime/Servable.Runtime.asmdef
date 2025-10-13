@@ -1,6 +1,6 @@
 {
     "name": "Servable.Runtime",
-    "rootNamespace": "",
+    "rootNamespace": "Servable",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

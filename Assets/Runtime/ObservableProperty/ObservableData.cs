@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Servable.Runtime.ObservableProperty
 {
     [Serializable]
-    public class ObservableData<T>: AObservableProperty
+    public class ObservableData<T>: AObservableData
     {
         [SerializeField]
         private T _value;

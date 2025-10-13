@@ -1,7 +1,7 @@
 using System;
 using JetBrains.Annotations;
 
-namespace Servable.Runtime
+namespace Servable.Runtime.Attributes
 {
     [AttributeUsage(AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
     [MeansImplicitUse]

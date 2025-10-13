@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Servable.Runtime.ObservableProperty
 {
-    public class ObservableCommand
+    public class ObservableCommand: AObservableProperty
     {
         private Action _onCommand;
         
@@ -32,7 +32,7 @@ namespace Servable.Runtime.ObservableProperty
         }
     }
     
-    public class ObservableCommand<TPayload>
+    public class ObservableCommand<TPayload>: AObservableProperty
     {
         private Action<TPayload> _onCommand;
        

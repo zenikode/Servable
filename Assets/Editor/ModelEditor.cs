@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Servable.Runtime;
-using Servable.Runtime.Bindings;
 using Servable.Runtime.ObservableProperty;
 using UnityEditor;
 using UnityEditorInternal;
@@ -98,7 +97,7 @@ namespace Servable.Editor
                         {
                             var typeArgument = type.GenericTypeArguments[0];
                             var value = "";
-                            if (info.Invoke(target, null) is AObservableProperty observable)
+                            if (info.Invoke(target, null) is AObservableData observable)
                                 value = observable.GetValue();
                             GUILayout.Label($"{item.Name} ({typeArgument.Name})", GUILayout.MinWidth(100));
                             GUILayout.FlexibleSpace();
