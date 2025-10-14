@@ -16,7 +16,7 @@ namespace Servable.Runtime
                 {
                     if (methodInfo.IsPrivate)
                     {
-                        Debug.LogWarning($"Атрибут {GetType().Name} нельзя использовать на private-методах.");
+                        Debug.LogWarning($"{typeof(T).Name} is not allowed on private methods.");
                         continue;
                     }
                     if (methodInfo.GetParameters().Length == 0)

@@ -22,7 +22,7 @@ namespace Servable.Runtime
                 {
                     if (methodInfo.IsPrivate)
                     {
-                        Debug.LogWarning($"Атрибут {GetType().Name} нельзя использовать на private-методах.");
+                        Debug.LogWarning($"OnData Attribute is not allowed on private methods.");
                         continue;
                     }
 
@@ -50,7 +50,7 @@ namespace Servable.Runtime
                 {
                     if (methodInfo.IsPrivate)
                     {
-                        Debug.LogWarning($"Атрибут {GetType().Name} нельзя использовать на private-методах.");
+                        Debug.LogWarning($"OnCommand Attribute is not allowed on private methods.");
                         continue;
                     }
                     var info = type.GetProperty(attr.PropertyName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
@@ -104,7 +104,7 @@ namespace Servable.Runtime
                 {
                     if (methodInfo.IsPrivate)
                     {
-                        Debug.LogWarning($"Атрибут {GetType().Name} нельзя использовать на private-методах.");
+                        Debug.LogWarning($"OnData Attribute is not allowed on private methods.");
                         continue;
                     }
                     var info = type.GetProperty(attr.PropertyName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
@@ -131,7 +131,7 @@ namespace Servable.Runtime
                 {
                     if (methodInfo.IsPrivate)
                     {
-                        Debug.LogWarning($"Атрибут {GetType().Name} нельзя использовать на private-методах.");
+                        Debug.LogWarning($"OnCommand Attribute is not allowed on private methods.");
                         continue;
                     }
                     var info = type.GetProperty(attr.PropertyName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
