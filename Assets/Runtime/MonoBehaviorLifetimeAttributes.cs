@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using Servable.Runtime.Attributes;
+using UnityEngine;
 
 namespace Servable.Runtime
 {
@@ -12,8 +13,16 @@ namespace Servable.Runtime
             var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             foreach (var methodInfo in methods)
                 if (methodInfo.GetCustomAttribute<T>(true) != null)
+                {
+                    if (methodInfo.IsPrivate)
+                    {
+                        Debug.LogWarning($"Атрибут {GetType().Name} нельзя использовать на private-методах.");
+                        continue;
+                    }
                     if (methodInfo.GetParameters().Length == 0)
                         methodInfo.Invoke(this, null);
+
+                }
         }
         
         private void Awake() => CallAttributedMethods<OnAwakeAttribute>();

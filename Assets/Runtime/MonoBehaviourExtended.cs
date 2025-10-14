@@ -20,6 +20,12 @@ namespace Servable.Runtime
             {
                 foreach (var attr in methodInfo.GetCustomAttributes<OnDataAttribute>(true))
                 {
+                    if (methodInfo.IsPrivate)
+                    {
+                        Debug.LogWarning($"Атрибут {GetType().Name} нельзя использовать на private-методах.");
+                        continue;
+                    }
+
                     var info = type.GetProperty(attr.PropertyName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
                     if (info == null) continue;
                     
@@ -42,6 +48,11 @@ namespace Servable.Runtime
             
                 foreach (var attr in methodInfo.GetCustomAttributes<OnCommandAttribute>(true))
                 {
+                    if (methodInfo.IsPrivate)
+                    {
+                        Debug.LogWarning($"Атрибут {GetType().Name} нельзя использовать на private-методах.");
+                        continue;
+                    }
                     var info = type.GetProperty(attr.PropertyName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
                     if (info == null) continue;
                     
@@ -91,6 +102,11 @@ namespace Servable.Runtime
             {
                 foreach (var attr in methodInfo.GetCustomAttributes<OnDataAttribute>(true))
                 {
+                    if (methodInfo.IsPrivate)
+                    {
+                        Debug.LogWarning($"Атрибут {GetType().Name} нельзя использовать на private-методах.");
+                        continue;
+                    }
                     var info = type.GetProperty(attr.PropertyName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
                     if (info == null) continue;
                     
@@ -113,6 +129,11 @@ namespace Servable.Runtime
                 
                 foreach (var attr in methodInfo.GetCustomAttributes<OnCommandAttribute>(true))
                 {
+                    if (methodInfo.IsPrivate)
+                    {
+                        Debug.LogWarning($"Атрибут {GetType().Name} нельзя использовать на private-методах.");
+                        continue;
+                    }
                     var info = type.GetProperty(attr.PropertyName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
                     if (info == null) continue;
                     
