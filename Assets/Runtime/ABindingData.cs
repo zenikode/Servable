@@ -7,13 +7,10 @@ namespace Servable.Runtime
 {
     public abstract class ABindingData<TData> : ABinding
     {
-        [SerializeField]
-        private ObservableDataReference<TData> reference;
+        [SerializeField] private ObservableDataReference<TData> reference;
         public override bool IsValid() => reference.IsValid();
         public override Object GetModel() => reference.viewModel;
-        
         protected ObservableData<TData> Data => reference.Observable;
-        [OnData(nameof(Data))]  public virtual void OnValue(TData value) { }
-
+        [OnData(nameof(Data))] public virtual void OnValue(TData value) { }
     }
 }

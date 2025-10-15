@@ -16,48 +16,18 @@ namespace Servable.Editor
         private const BindingFlags BindingAttr = BindingFlags.Instance | BindingFlags.Public;
         public override void OnInspectorGUI()
         {
-            ListData();
-            ListCommands();
-            ListCommandsWithArg();
-            ListInvalidBindings();
+            if (target is IModel)
+            {
+                ListData();
+                ListCommands();
+                ListCommandsWithArg();
+                if (target is MonoBehaviour monoBehaviour) 
+                    ProcessSceneObject(monoBehaviour);
+            }
             DrawDefaultInspector();
-            if (target is ModelBehaviour viewModel)
-                if(!PrefabUtility.IsPartOfPrefabInstance(target))
-                    ComponentUtility.MoveComponentUp(viewModel);
         }
 
-        private void ListInvalidBindings()
-        {
-            if (target is ModelBehaviour viewModel)
-            {
-                var bindings = viewModel.GetComponentsInChildren<ABinding>();
-                foreach (dynamic binding in bindings)
-                {
-                    try
-                    {
-                        if (!binding.IsValid())
-                        { 
-                            var color = GUI.color;
-                            GUI.color = Color.red;
-                            GUILayout.BeginHorizontal(EditorStyles.helpBox);
-                            GUILayout.Label($"{binding.GetType().Name} on {binding.name}");
-                            GUILayout.FlexibleSpace();
-                            if (GUILayout.Button("FIX", GUILayout.Width(50)))
-                            {
-                                Selection.activeObject = binding;
-                                EditorGUIUtility.PingObject(binding);
-                            }
-                            GUILayout.EndHorizontal();
-                            GUI.color = color;
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        // ignored
-                    }
-                }
-            }
-        }
+     
     
         public bool DisplayData { get; set; } = true;
         private void ListData()
@@ -216,6 +186,52 @@ namespace Servable.Editor
                 }
                 EditorGUI.indentLevel--;
                 GUILayout.EndVertical();
+            }
+        }
+        
+        private void ProcessSceneObject(MonoBehaviour sceneObject)
+        {
+            if (sceneObject is IModel)
+            {
+                ListInvalidBindings(sceneObject);
+                if (!PrefabUtility.IsPartOfPrefabInstance(sceneObject))
+                {
+                    if (sceneObject.GetComponentIndex() > 1)
+                        ComponentUtility.MoveComponentUp(sceneObject);
+                    
+                    if (sceneObject.GetComponentsInChildren<IModel>().Length > 1)
+                        Debug.LogError($"There are 2 models on {sceneObject.gameObject.name}.", sceneObject);
+                }
+            }
+        }
+
+        private void ListInvalidBindings(MonoBehaviour monoBehaviour)
+        {
+            var bindings = monoBehaviour.GetComponentsInChildren<ABinding>();
+            foreach (var binding in bindings)
+            {
+                try
+                {
+                    if (!binding.IsValid())
+                    { 
+                        var color = GUI.color;
+                        GUI.color = Color.red;
+                        GUILayout.BeginHorizontal(EditorStyles.helpBox);
+                        GUILayout.Label($"{binding.GetType().Name} on {binding.name}");
+                        GUILayout.FlexibleSpace();
+                        if (GUILayout.Button("FIX", GUILayout.Width(50)))
+                        {
+                            Selection.activeObject = binding;
+                            EditorGUIUtility.PingObject(binding);
+                        }
+                        GUILayout.EndHorizontal();
+                        GUI.color = color;
+                    }
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
             }
         }
     }

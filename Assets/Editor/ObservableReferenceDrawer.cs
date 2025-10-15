@@ -22,7 +22,7 @@ namespace Servable.Editor
             var viewModelProperty = property.FindPropertyRelative("viewModel");
             if (viewModelProperty.objectReferenceValue is GameObject go)
             {
-                viewModelProperty.objectReferenceValue = go.GetComponent<ModelBehaviour>();
+                viewModelProperty.objectReferenceValue = go.GetComponent<IModel>() as Object;
                 viewModelProperty.serializedObject.ApplyModifiedProperties();
                 return;            
             } 
@@ -34,7 +34,7 @@ namespace Servable.Editor
             {
                 var component = property.serializedObject.targetObject as Component;
                 if (!component) return;
-                viewModelProperty.objectReferenceValue = component.GetComponentInParent<ModelBehaviour>();
+                viewModelProperty.objectReferenceValue = component.GetComponentInParent<IModel>() as Object;
                 viewModelProperty.serializedObject.ApplyModifiedProperties();
                 return;            
             }

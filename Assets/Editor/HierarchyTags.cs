@@ -38,17 +38,17 @@ namespace Servable.Editor
             var target = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
             if (target == null) return;
         
-            var vms = target.GetComponentsInParent<ModelBehaviour>();
-            foreach (var vm in vms)
+            var models = target.GetComponentsInParent<IModel>();
+            foreach (MonoBehaviour model in models)
             { 
-                var type = vm.GetType();
+                var type = model.GetType();
                 var color = ComputeTypeHashedColor(type);
-                var offset = EdgeOffset(target, vm);
+                var offset = EdgeOffset(target, model);
             
                 var rect = new Rect(selectionRect.x - selectionRect.height - (selectionRect.height - 2) * offset, selectionRect.y, 1, selectionRect.height);
                 EditorGUI.DrawRect(rect, color);
             
-                if (vm.gameObject == target)
+                if (model.gameObject == target)
                 {
                     var add = selectionRect.height + (selectionRect.height - 2) * offset;
                     var rect1 = new Rect(selectionRect.x - add, selectionRect.y, 8, 1);
@@ -151,11 +151,11 @@ namespace Servable.Editor
             return names.ToArray();
         }
 
-        private static string GetModelTag(GameObject target) => target.GetComponents<ModelBehaviour>()
+        private static string GetModelTag(GameObject target) => target.GetComponents<IModel>()
             .Select(component => component.GetType())
             .Select(type =>
             {
-                if (type.IsSubclassOf(typeof(ModelBehaviour)))
+                if (type.IsSubclassOf(typeof(IModel)))
                 {
                     var color = ComputeTypeHashedColor(type);
                     var colorString = ColorUtility.ToHtmlStringRGB(color);
@@ -165,10 +165,10 @@ namespace Servable.Editor
             })
             .FirstOrDefault();
     
-        public static int EdgeOffset(GameObject go, ModelBehaviour vm)
+        public static int EdgeOffset(GameObject go, MonoBehaviour root)
         {
             var result = 0;
-            while (go!=vm.gameObject)
+            while (go != root.gameObject)
             {
                 go = go.transform.parent.gameObject;
                 result += 1;
