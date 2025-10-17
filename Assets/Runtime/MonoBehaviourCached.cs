@@ -51,8 +51,12 @@ namespace Servable.Runtime
         }
         
         [UsedImplicitly]
-        public Transform Tf => ResolveComponent<Transform>(); 
+        public Transform Tf => ResolveComponent<Transform>();
 
+        protected abstract void Awake();
+        protected abstract void OnEnable();
+        protected abstract void OnDisable();
+        protected abstract void OnDestroy();
 
     }
 }

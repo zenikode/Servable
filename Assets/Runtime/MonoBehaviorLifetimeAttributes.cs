@@ -25,10 +25,10 @@ namespace Servable.Runtime
                 }
         }
         
-        private void Awake() => CallAttributedMethods<OnAwakeAttribute>();
-        private void OnEnable() => CallAttributedMethods<OnEnableAttribute>();
-        private void OnDisable() => CallAttributedMethods<OnDisableAttribute>();
-        private void OnDestroy() => CallAttributedMethods<OnDestroyAttribute>();
+        protected sealed override void Awake() => CallAttributedMethods<OnAwakeAttribute>();
+        protected sealed override void OnEnable() => CallAttributedMethods<OnEnableAttribute>();
+        protected sealed override void OnDisable() => CallAttributedMethods<OnDisableAttribute>();
+        protected sealed override void OnDestroy() => CallAttributedMethods<OnDestroyAttribute>();
 
     }
 }
