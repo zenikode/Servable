@@ -18,35 +18,7 @@ namespace Servable.Runtime
 
             foreach (var methodInfo in methods)
             {
-                foreach (var attr in methodInfo.GetCustomAttributes<OnDataAttribute>(true))
-                {
-                    if (methodInfo.IsPrivate)
-                    {
-                        Debug.LogWarning($"OnData Attribute is not allowed on private methods.");
-                        continue;
-                    }
-
-                    var info = type.GetProperty(attr.PropertyName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-                    if (info == null) continue;
-                    
-                    var data = info.GetValue(this) as AObservableProperty;
-                    if (data == null) continue;
-                    
-                    var parameters = methodInfo.GetParameters();
-                    if (parameters.Length != 1) continue;
-                    
-                    var dataType = parameters[0].ParameterType;
-                    var actionType = typeof(Action<>).MakeGenericType(dataType);
-                    var handler = Delegate.CreateDelegate(actionType, this, methodInfo, false);
-                    if (handler == null) continue;
-                    
-                    var addListener = data.GetType().GetMethod("AddListener", BindingFlags.Instance | BindingFlags.Public);
-                    if (addListener == null) continue;
-                    
-                    addListener.Invoke(data, new object[] { handler });
-                }
-            
-                foreach (var attr in methodInfo.GetCustomAttributes<OnCommandAttribute>(true))
+                foreach (var attr in methodInfo.GetCustomAttributes<ObserveAttribute>(true))
                 {
                     if (methodInfo.IsPrivate)
                     {
@@ -100,34 +72,7 @@ namespace Servable.Runtime
             var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             foreach (var methodInfo in methods)
             {
-                foreach (var attr in methodInfo.GetCustomAttributes<OnDataAttribute>(true))
-                {
-                    if (methodInfo.IsPrivate)
-                    {
-                        Debug.LogWarning($"OnData Attribute is not allowed on private methods.");
-                        continue;
-                    }
-                    var info = type.GetProperty(attr.PropertyName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-                    if (info == null) continue;
-                    
-                    var data = info.GetValue(this) as AObservableProperty;
-                    if (data == null) continue;
-
-                    var parameters = methodInfo.GetParameters();
-                    if (parameters.Length != 1) continue;
-                    
-                    var dataType = parameters[0].ParameterType;
-                    var actionType = typeof(Action<>).MakeGenericType(dataType);
-                    var handler = Delegate.CreateDelegate(actionType, this, methodInfo, false);
-                    if (handler == null) continue;
-                    
-                    var removeListener = data.GetType().GetMethod("RemoveListener", BindingFlags.Instance | BindingFlags.Public);
-                    if (removeListener == null) continue;
-                    
-                    removeListener.Invoke(data, new object[] { handler });
-                }
-                
-                foreach (var attr in methodInfo.GetCustomAttributes<OnCommandAttribute>(true))
+                foreach (var attr in methodInfo.GetCustomAttributes<ObserveAttribute>(true))
                 {
                     if (methodInfo.IsPrivate)
                     {

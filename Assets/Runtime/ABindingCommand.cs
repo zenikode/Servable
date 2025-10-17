@@ -13,7 +13,7 @@ namespace Servable.Runtime
         public override bool IsValid() => reference.IsValid();
         public override Object GetModel() => reference.viewModel;
         protected ObservableCommand<TPayload> Command => reference.Observable;
-        [OnCommand(nameof(Command))] public virtual void OnCommand(TPayload payload) { }
+        [Observe(nameof(Command))] public virtual void OnCommand(TPayload payload) { }
     }
     
     public abstract class ABindingCommand : ABinding
@@ -23,7 +23,7 @@ namespace Servable.Runtime
         public override bool IsValid() => reference.IsValid();
         public override Object GetModel() => reference.viewModel;
         protected ObservableCommand Command => reference.Observable;
-        [OnCommand(nameof(Command))] public virtual void OnCommand() { }
+        [Observe(nameof(Command))] public virtual void OnCommand() { }
 
     }
 }

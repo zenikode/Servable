@@ -11,6 +11,6 @@ namespace Servable.Runtime
         public override bool IsValid() => reference.IsValid();
         public override Object GetModel() => reference.viewModel;
         protected ObservableData<TData> Data => reference.Observable;
-        [OnData(nameof(Data))] public virtual void OnValue(TData value) { }
+        [Observe(nameof(Data))] public virtual void OnValue(TData value) { }
     }
 }
