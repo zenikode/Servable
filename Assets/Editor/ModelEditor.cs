@@ -199,7 +199,7 @@ namespace Servable.Editor
                     if (sceneObject.GetComponentIndex() > 1)
                         ComponentUtility.MoveComponentUp(sceneObject);
                     
-                    if (sceneObject.GetComponentsInChildren<IModel>().Length > 1)
+                    if (sceneObject.GetComponents<IModel>().Length > 1)
                         Debug.LogError($"There are 2 models on {sceneObject.gameObject.name}.", sceneObject);
                 }
             }
