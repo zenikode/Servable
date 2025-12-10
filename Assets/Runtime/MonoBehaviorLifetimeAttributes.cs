@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Servable.Runtime
 {
-    public abstract class MonoBehaviorLifetimeAttributes : MonoBehaviourCached
+    public abstract class MonoBehaviorLifetimeAttributes : MonoBehaviourAttributeDummy
     {
         private void CallAttributedMethods<T>() where T: Attribute
         {
