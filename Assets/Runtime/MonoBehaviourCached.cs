@@ -7,7 +7,7 @@ namespace Servable.Runtime
 {
     public abstract class MonoBehaviourCached : MonoBehaviour
     {
-        public Transform _tf;
+        private Transform _tf;
         [UsedImplicitly]
         public Transform Tf => _tf ??= GetComponent<Transform>();
 
