@@ -1,3 +1,4 @@
+using System;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -67,6 +68,11 @@ namespace Servable.Runtime.Persistency
                     PlayerPrefs.SetString(key, JsonConvert.SerializeObject(value));
                     break;
             }
+        }
+
+        public override void AddListener(Action reconnect)
+        {
+            // Unneeded
         }
     }
 }

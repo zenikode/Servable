@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Servable.Runtime.ObservableProperty;
 using UnityEngine;
 
 namespace Servable.Runtime.Persistency
@@ -16,12 +17,15 @@ namespace Servable.Runtime.Persistency
             FilePathRelative = filePathRelative;
             _cache = null;
             EnsureLoaded();
+            CmdReconnect.Emit();
         }
 
         private readonly object _sync = new();
         private Dictionary<string, JToken> _cache; 
         private string FilePath => Path.Combine(Application.persistentDataPath, FilePathRelative) + ".json";
         private string FilePathRelative { get; set; }
+
+        public ObservableCommand CmdReconnect { get; } = new();
 
         private void EnsureLoaded()
         {
@@ -93,6 +97,11 @@ namespace Servable.Runtime.Persistency
                 _cache[key] = value == null ? JValue.CreateNull() : JToken.FromObject(value);
                 SaveInternal();
             }
+        }
+
+        public override void AddListener(Action reconnect)
+        {
+            CmdReconnect.AddListener(reconnect);
         }
 
         public void RemoveKey(string key)

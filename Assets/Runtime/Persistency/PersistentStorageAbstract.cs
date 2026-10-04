@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Servable.Runtime.Persistency
@@ -7,6 +8,8 @@ namespace Servable.Runtime.Persistency
     {
         public abstract T Get<T>(string key, T defaultValue = default);
         public abstract void Set<T>(string key, T value);
+
+        public abstract void AddListener(Action reconnect);
     }
 }
 

@@ -7,12 +7,20 @@ namespace Servable.Runtime.Persistency
         public static void ConnectStorage<T>(this ObservableData<T> self, PersistentStorageAbstract storage, string name, T def = default)
         {
             self.Value = storage.Get(name, def);
+            storage.AddListener(Reconnect);
             self.AddListener(Listener);
             return;
             void Listener(T newValue)
             {
                 storage.Set(name, newValue);
             }
+            void Reconnect()
+            {
+                self.RemoveListener(Listener);
+                self.Value = storage.Get(name, def);
+                self.AddListener(Listener);
+            }
         }
+
     }
 }

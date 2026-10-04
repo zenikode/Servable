@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -84,6 +85,11 @@ namespace Servable.Runtime.Persistency
                 _cache[key] = value == null ? JValue.CreateNull() : JToken.FromObject(value);
                 SaveInternal();
             }
+        }
+
+        public override void AddListener(Action reconnect)
+        {
+            // Unneeded
         }
 
         public void RemoveKey(string key)
