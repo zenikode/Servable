@@ -1,15 +1,12 @@
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace Servable.Runtime.Extension
+namespace Servable.Runtime.Persistency
 {
-    public class PlayerPrefsStore : IPrefsStore
+    [CreateAssetMenu(menuName = "Servable/Persistency/PlayerPrefsStore")]
+    public class PersistentStoragePlayerPrefs : PersistentStorageAbstract
     {
-        private static PlayerPrefsStore _instance;
-        public static PlayerPrefsStore Instance => _instance ??= new PlayerPrefsStore();
-
-
-        public T Get<T>(string key, T def = default)
+        public override T Get<T>(string key, T def = default)
         {
             object result = def;
             switch (def)
@@ -46,7 +43,7 @@ namespace Servable.Runtime.Extension
             return (T)result;
         }
 
-        public void Set<T>(string key, T value)
+        public override void Set<T>(string key, T value)
         {
             switch (value)
             {

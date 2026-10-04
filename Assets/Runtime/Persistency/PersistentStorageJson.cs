@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,25 +5,22 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
-namespace Servable.Runtime.Extension
+namespace Servable.Runtime.Persistency
 {
-    /// <summary>
-    /// ScriptableObject-реализация файлового хранилища настроек.
-    /// Не выполняет миграцию из PlayerPrefs.
-    /// Создавайте через JsonPrefs.Create(filePath) или храните экземпляр как asset.
-    /// </summary>
-    [CreateAssetMenu(fileName = "JsonPrefs", menuName = "Servable/JsonPrefs")]
-    public class JsonPrefs : ScriptableObject, IPrefsStore
+
+    [CreateAssetMenu(menuName = "Servable/Persistency/JsonPrefsStorage")]
+    public class PersistentStorageJson : PersistentStorageAbstract
     {
-        [SerializeField] private string filePathRelative = "prefs.json";
+        [SerializeField] private string filePathRelative = "prefs";
 
-        private readonly object _sync = new object();
+        private readonly object _sync = new();
         private Dictionary<string, JToken> _cache;
-        private string FilePath => Path.IsPathRooted(filePathRelative) ? filePathRelative : Path.Combine(Application.persistentDataPath, filePathRelative);
+        private string FilePath => Path.IsPathRooted(filePathRelative) ? 
+            filePathRelative : Path.Combine(Application.persistentDataPath, filePathRelative) + ".json";
 
-        public static JsonPrefs Create(string filePath)
+        public static PersistentStorageJson Create(string filePath)
         {
-            var inst = CreateInstance<JsonPrefs>();
+            var inst = CreateInstance<PersistentStorageJson>();
             inst.filePathRelative = filePath;
             return inst;
         }
@@ -67,7 +63,7 @@ namespace Servable.Runtime.Extension
             lock (_sync) return _cache.ContainsKey(key);
         }
 
-        public T Get<T>(string key, T defaultValue = default)
+        public override T Get<T>(string key, T defaultValue = default)
         {
             EnsureLoaded();
             lock (_sync)
@@ -88,7 +84,7 @@ namespace Servable.Runtime.Extension
             }
         }
 
-        public void Set<T>(string key, T value)
+        public override void Set<T>(string key, T value)
         {
             EnsureLoaded();
             lock (_sync)
