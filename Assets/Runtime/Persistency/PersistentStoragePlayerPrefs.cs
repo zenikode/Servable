@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Servable.Runtime.Persistency
 {
-    [CreateAssetMenu(menuName = "Servable/Persistency/PlayerPrefsStore")]
+    [CreateAssetMenu(menuName = "Servable/Persistency/PersistentStoragePlayerPrefs")]
     public class PersistentStoragePlayerPrefs : PersistentStorageAbstract
     {
         public override T Get<T>(string key, T def = default)

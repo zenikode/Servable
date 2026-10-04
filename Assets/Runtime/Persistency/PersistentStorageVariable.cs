@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,18 +8,24 @@ using UnityEngine;
 
 namespace Servable.Runtime.Persistency
 {
-    [CreateAssetMenu(menuName = "Servable/Persistency/PersistentStorageJson")]
-    public class PersistentStorageJson : PersistentStorageAbstract
+    [CreateAssetMenu(menuName = "Servable/Persistency/PersistentStorageVariable")]
+    public class PersistentStorageVariable : PersistentStorageAbstract
     {
-        [SerializeField] private string filePathRelative = "prefs";
+        public void Init(string filePathRelative)
+        {
+            FilePathRelative =  filePathRelative;
+        }
 
         private readonly object _sync = new();
         private Dictionary<string, JToken> _cache;
-        private string FilePath => Path.IsPathRooted(filePathRelative) ? 
-            filePathRelative : Path.Combine(Application.persistentDataPath, filePathRelative) + ".json";
+        private string FilePath => Path.Combine(Application.persistentDataPath, FilePathRelative) + ".json";
+        private string FilePathRelative { get; set; }
 
         private void EnsureLoaded()
         {
+            if (string.IsNullOrEmpty(FilePathRelative))
+                throw new Exception("PersistentStorageVariable needs to be initialized");
+            
             if (_cache != null) return;
             lock (_sync)
             {
