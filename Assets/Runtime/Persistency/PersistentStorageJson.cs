@@ -103,7 +103,7 @@ namespace Servable.Runtime.Persistency
             {
                 var dir = Path.GetDirectoryName(FilePath);
                 if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
-                File.WriteAllText(FilePath, jo.ToString(Formatting.None));
+                File.WriteAllText(FilePath, jo.ToString(Formatting.Indented));
             }
             catch
             {

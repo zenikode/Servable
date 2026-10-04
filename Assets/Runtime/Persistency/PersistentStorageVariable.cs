@@ -13,18 +13,20 @@ namespace Servable.Runtime.Persistency
     {
         public void Init(string filePathRelative)
         {
-            FilePathRelative =  filePathRelative;
+            FilePathRelative = filePathRelative;
+            _cache = null;
+            EnsureLoaded();
         }
 
         private readonly object _sync = new();
-        private Dictionary<string, JToken> _cache;
+        private Dictionary<string, JToken> _cache; 
         private string FilePath => Path.Combine(Application.persistentDataPath, FilePathRelative) + ".json";
         private string FilePathRelative { get; set; }
 
         private void EnsureLoaded()
         {
             if (string.IsNullOrEmpty(FilePathRelative))
-                throw new Exception("PersistentStorageVariable needs to be initialized");
+                Debug.LogWarning("PersistentStorageVariable needs to be initialized");
             
             if (_cache != null) return;
             lock (_sync)
@@ -110,7 +112,7 @@ namespace Servable.Runtime.Persistency
             {
                 var dir = Path.GetDirectoryName(FilePath);
                 if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
-                File.WriteAllText(FilePath, jo.ToString(Formatting.None));
+                File.WriteAllText(FilePath, jo.ToString(Formatting.Indented));
             }
             catch
             {
