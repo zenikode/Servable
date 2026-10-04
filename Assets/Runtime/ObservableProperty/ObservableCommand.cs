@@ -30,6 +30,32 @@ namespace Servable.Runtime.ObservableProperty
                 Debug.LogException(e);
             }
         }
+
+        public override void AddListener(Delegate handler)
+        {
+            if (handler == null) return;
+            if (handler is Action typed)
+            {
+                _onCommand -= typed;
+                _onCommand += typed;
+                return;
+            }
+            var d = (Action)Delegate.CreateDelegate(typeof(Action), handler.Target, handler.Method);
+            _onCommand -= d;
+            _onCommand += d;
+        }
+
+        public override void RemoveListener(Delegate handler)
+        {
+            if (handler == null) return;
+            if (handler is Action typed)
+            {
+                _onCommand -= typed;
+                return;
+            }
+            var d = (Action)Delegate.CreateDelegate(typeof(Action), handler.Target, handler.Method);
+            _onCommand -= d;
+        }
     }
     
     public class ObservableCommand<TPayload>: AObservableProperty
@@ -59,6 +85,32 @@ namespace Servable.Runtime.ObservableProperty
             {
                 Debug.LogException(e);
             }
+        }
+
+        public override void AddListener(Delegate handler)
+        {
+            if (handler == null) return;
+            if (handler is Action<TPayload> typed)
+            {
+                _onCommand -= typed;
+                _onCommand += typed;
+                return;
+            }
+            var d = (Action<TPayload>)Delegate.CreateDelegate(typeof(Action<TPayload>), handler.Target, handler.Method);
+            _onCommand -= d;
+            _onCommand += d;
+        }
+
+        public override void RemoveListener(Delegate handler)
+        {
+            if (handler == null) return;
+            if (handler is Action<TPayload> typed)
+            {
+                _onCommand -= typed;
+                return;
+            }
+            var d = (Action<TPayload>)Delegate.CreateDelegate(typeof(Action<TPayload>), handler.Target, handler.Method);
+            _onCommand -= d;
         }
     }
 }

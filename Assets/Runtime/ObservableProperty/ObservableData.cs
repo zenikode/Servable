@@ -53,5 +53,33 @@ namespace Servable.Runtime.ObservableProperty
         {
             return Equals(_value, null) ? "null" : _value.ToString();
         }
+
+        public override void AddListener(Delegate handler)
+        {
+            if (handler == null) return;
+            if (handler is Action<T> typed)
+            {
+                _onValue -= typed;
+                _onValue += typed;
+                typed(_value);
+                return;
+            }
+            var d = (Action<T>)Delegate.CreateDelegate(typeof(Action<T>), handler.Target, handler.Method);
+            _onValue -= d;
+            _onValue += d;
+            d(_value);
+        }
+
+        public override void RemoveListener(Delegate handler)
+        {
+            if (handler == null) return;
+            if (handler is Action<T> typed)
+            {
+                _onValue -= typed;
+                return;
+            }
+            var d = (Action<T>)Delegate.CreateDelegate(typeof(Action<T>), handler.Target, handler.Method);
+            _onValue -= d;
+        }
     }
 }
